@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8086"
+    environment:
+      - JWT_SECRET=your_jwt_secret
+
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8085"
+    depends_on:
+      - user-db
+    environment:
+      - DB_HOST=127.0.0.1
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=Dl!220695
+      - DB_NAME=usersapp
+
+  user-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: Dl!220695
+      MYSQL_DATABASE: usersapp
+    ports:
+      - "3309:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
